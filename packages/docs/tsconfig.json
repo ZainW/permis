@@ -14,5 +14,5 @@
       "collections/*": ["./.source/*"]
     }
   },
-  "include": ["src", ".source"]
+  "include": ["src", ".source", "source.config.ts", "vite.config.ts"]
 }
