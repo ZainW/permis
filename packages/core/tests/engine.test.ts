@@ -88,7 +88,9 @@ test("PermisEngine in-memory: authorize() throws on denial", async () => {
   const editor = defineRole("editor").with(readPost).build();
   const engine = new PermisEngine({ roles: [editor] });
   await expect(engine.authorize("editor", "read", "post")).resolves.toBeUndefined();
-  await expect(engine.authorize("editor", "delete", "post")).rejects.toThrow("Permission denied");
+  await expect(engine.authorize("editor", "delete", "post")).rejects.toThrow(
+    /Permission denied: "editor" cannot "delete" on "post"/,
+  );
 });
 
 test("PermisEngine in-memory: getRolesFor() returns matching role names", async () => {

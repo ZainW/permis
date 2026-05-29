@@ -65,7 +65,11 @@ export class PermisEngine {
     resource: ResourceType | Resource,
   ): Promise<void> {
     const allowed = await this.can(subject, action, resource);
-    if (!allowed) throw new Error("Permission denied");
+    if (!allowed) {
+      const sub = typeof subject === "string" ? subject : subject.id;
+      const res = typeof resource === "string" ? resource : resource.type;
+      throw new Error(`Permission denied: "${sub}" cannot "${action}" on "${res}"`);
+    }
   }
 
   async getRolesFor(subject: SubjectId | Subject): Promise<string[]> {
