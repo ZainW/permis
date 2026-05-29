@@ -6,9 +6,9 @@
   "license": "MIT",
   "type": "module",
   "scripts": {
-    "build": "pnpm -r run build",
+    "build": "pnpm -r build",
     "dev": "pnpm -r dev",
-    "test": "pnpm -r run test",
+    "test": "pnpm -r test",
     "check": "vp check",
     "prepublishOnly": "pnpm -r build",
     "prepare": "vp config"
