@@ -36,7 +36,7 @@ test("definePermission .having(key, schema) adds a having condition", () => {
     "~standard": {
       version: 1 as const,
       vendor: "test",
-      validate: (v: unknown) => ({ issues: [] }),
+      validate: (_v: unknown) => ({ issues: [] }),
     },
   };
   const perm = definePermission("read", "post").having("subject", schema).build();
@@ -51,7 +51,7 @@ test("definePermission .having with resource key", () => {
     "~standard": {
       version: 1 as const,
       vendor: "test",
-      validate: (v: unknown) => ({ issues: [] }),
+      validate: (_v: unknown) => ({ issues: [] }),
     },
   };
   const perm = definePermission("read", "post").having("resource", schema).build();
@@ -63,7 +63,7 @@ test("definePermission .having with environment key", () => {
     "~standard": {
       version: 1 as const,
       vendor: "test",
-      validate: (v: unknown) => ({ issues: [] }),
+      validate: (_v: unknown) => ({ issues: [] }),
     },
   };
   const perm = definePermission("read", "post").having("environment", schema).build();
@@ -85,7 +85,7 @@ test("definePermission chaining when, where, having together", () => {
     "~standard": {
       version: 1 as const,
       vendor: "test",
-      validate: (v: unknown) => ({ issues: [] }),
+      validate: (_v: unknown) => ({ issues: [] }),
     },
   };
   const perm = definePermission("write", "post")
