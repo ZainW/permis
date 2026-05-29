@@ -1,0 +1,38 @@
+---
+title: Getting Started
+description: Install and configure Permis for your application
+---
+
+## What is Permis?
+
+Permis is a TypeScript permissions library supporting **Role-Based Access Control (RBAC)** and **Attribute-Based Access Control (ABAC)**. It provides a fluent builder API to define permissions, roles, and conditions, with a zero-dependency core and adapters for Drizzle ORM and Better-Auth.
+
+## Installation
+
+```bash
+pnpm add @permis/core
+```
+
+For database-backed permission storage:
+
+```bash
+pnpm add @permis/drizzle   # Drizzle ORM adapter
+pnpm add @permis/better-auth  # Better-Auth plugin + bridge
+```
+
+## Quick Example
+
+```ts
+import { definePermission, PermisEngine } from "@permis/core";
+
+const readDocs = definePermission("documents").can("read").where("status", "published").build();
+
+const reader = defineRole("reader").grantAll([readDocs]).build();
+
+const engine = new PermisEngine({ roles: [reader] });
+
+const result = engine.can(reader, "read", {
+  type: "documents",
+  status: "published",
+}); // => true
+```
