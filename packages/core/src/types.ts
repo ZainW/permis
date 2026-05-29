@@ -21,7 +21,11 @@ export type Resource =
     };
 
 export interface PermissionContext {
-  subject: Subject;
+  subject: {
+    id: SubjectId;
+    type?: string;
+    attrs?: Record<string, unknown>;
+  };
   resource?: Resource;
   action: Action;
   environment?: Record<string, unknown>;

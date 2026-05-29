@@ -1,8 +1,8 @@
 import { expect, test } from "vite-plus/test";
 import { matchAction, matchResource, evaluateConditions } from "../src/resolver.ts";
-import type { PermissionContext, Subject } from "../src/types.ts";
+import type { PermissionContext } from "../src/types.ts";
 
-const makeSubject = (id: string): Subject => ({ id });
+const makeSubject = (id: string): { id: string } => ({ id });
 
 // --- matchAction ---
 test("matchAction — exact string match", () => {
