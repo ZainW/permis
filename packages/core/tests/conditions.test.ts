@@ -30,7 +30,8 @@ test("WhereBuilder .matches(regex) builds condition with matches operator", () =
   const wb = new WhereBuilder("email");
   const condition = wb.matches("^[a-z]+@test\\.com$").build();
   expect(condition.operator).toBe("matches");
-  expect(condition.value).toBe("^[a-z]+@test\\.com$");
+  expect(condition.value).toBeInstanceOf(RegExp);
+  expect((condition.value as RegExp).source).toBe("^[a-z]+@test\\.com$");
 });
 
 test("WhereBuilder throws if build() called before operator", () => {

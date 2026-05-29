@@ -12,10 +12,15 @@ export function betterAuthBridge(
   },
   options?: BetterAuthBridgeOptions,
 ): PermisAdapter {
+  let _pendingSession: Promise<Record<string, unknown>> | null = null;
+
   async function getSession(): Promise<Record<string, unknown>> {
     if (auth.$context?.session) return auth.$context.session;
-    if (auth.api?.getSession) return auth.api.getSession();
-    return {};
+    if (_pendingSession) return _pendingSession;
+    _pendingSession = (auth.api?.getSession?.() ?? Promise.resolve({})).finally(() => {
+      _pendingSession = null;
+    });
+    return _pendingSession;
   }
 
   return {

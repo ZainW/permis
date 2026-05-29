@@ -29,7 +29,7 @@ export class WhereBuilder {
 
   matches(regex: string): this {
     this._operator = "matches";
-    this._value = regex;
+    this._value = new RegExp(regex);
     return this;
   }
 

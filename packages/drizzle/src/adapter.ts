@@ -43,7 +43,19 @@ export function drizzleAdapter(db: DrizzleDb, schema: Schema): PermisAdapter {
         }
         if (r.condition) {
           try {
-            perm.conditions = JSON.parse(r.condition as string);
+            const conditions = JSON.parse(r.condition as string);
+            if (Array.isArray(conditions)) {
+              for (const c of conditions) {
+                if (c.operator === "matches" && typeof c.value === "string") {
+                  try {
+                    c.value = new RegExp(c.value);
+                  } catch {
+                    /* keep as string */
+                  }
+                }
+              }
+            }
+            perm.conditions = conditions;
           } catch {
             /* ignore */
           }
@@ -107,9 +119,27 @@ export function drizzleAdapter(db: DrizzleDb, schema: Schema): PermisAdapter {
       const resource = Array.isArray(permission.resource)
         ? JSON.stringify(permission.resource)
         : permission.resource;
+
+      let conditionJson: string | null = null;
+      if (permission.conditions) {
+        const serializable = permission.conditions.map((c) => {
+          if (c.operator === "matches" && c.value instanceof RegExp) {
+            return { ...c, value: c.value.source };
+          }
+          return c;
+        });
+        conditionJson = JSON.stringify(serializable);
+      }
+
       const result = db
         .insert(permissions)
-        .values({ action, resource, description: permission.description ?? null })
+        .values({
+          action,
+          resource,
+          fields: permission.fields ? JSON.stringify(permission.fields) : null,
+          condition: conditionJson,
+          description: permission.description ?? null,
+        })
         .returning({ id: permissions.id })
         .get();
       if (result) {

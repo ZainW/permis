@@ -49,12 +49,14 @@ async function evaluateWhereCondition(
       return resolved === resolvePath(ctx, value as string);
     case "in":
       return Array.isArray(value) ? value.includes(resolved) : false;
-    case "matches":
+    case "matches": {
+      if (value instanceof RegExp) return value.test(String(resolved));
       try {
         return new RegExp(value as string).test(String(resolved));
       } catch {
         return false;
       }
+    }
     default:
       return false;
   }
