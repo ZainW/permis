@@ -1,0 +1,57 @@
+---
+title: Engine Usage
+description: Using PermisEngine for runtime authorization
+---
+
+`PermisEngine` is the runtime component that evaluates permissions against subjects and resources.
+
+## Constructor
+
+```ts
+const engine = new PermisEngine({
+  roles: [reader, editor, admin], // Available role definitions
+  strictMode: true, // Throw on unknown roles
+});
+```
+
+## can() and cannot()
+
+```ts
+const result = engine.can(editor, "write", {
+  type: "documents",
+  id: "doc-123",
+});
+// => true
+
+const denied = engine.cannot(reader, "write", {
+  type: "documents",
+  id: "doc-123",
+});
+// => true
+```
+
+## authorize()
+
+Returns the resource if authorized, throws `PermisError` if not:
+
+```ts
+try {
+  const doc = engine.authorize(editor, "write", {
+    type: "documents",
+    id: "doc-123",
+  });
+  // doc is safe to use
+} catch (error) {
+  if (error instanceof PermisError) {
+    console.error(error.message);
+  }
+}
+```
+
+## Error Messages
+
+When authorization fails, `PermisError` includes a descriptive message:
+
+```
+Permission denied: role 'reader' cannot perform action 'write' on resource type 'documents'
+```

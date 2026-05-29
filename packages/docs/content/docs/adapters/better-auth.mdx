@@ -1,0 +1,66 @@
+---
+title: Better-Auth Integration
+description: Integrate Permis with Better-Auth for authentication-aware authorization
+---
+
+`@permis/better-auth` provides deep integration with Better-Auth, including a plugin, session enrichment, and route guards.
+
+## Installation
+
+```bash
+pnpm add @permis/better-auth better-auth
+```
+
+## Plugin Setup
+
+Add the Permis plugin to your Better-Auth configuration:
+
+```ts
+import { betterAuth } from "better-auth";
+import { permisPlugin } from "@permis/better-auth";
+
+export const auth = betterAuth({
+  plugins: [
+    permisPlugin({
+      engine: myEngine,
+    }),
+  ],
+});
+```
+
+## Session Enrichment
+
+The plugin automatically enriches the session with the user's permissions:
+
+```ts
+const session = await auth.api.getSession({ headers });
+// session.permis now contains the user's role and resolved permissions
+```
+
+## Route Guards
+
+Protect routes with the built-in guard middleware:
+
+```ts
+import { createGuard } from "@permis/better-auth";
+
+const guard = createGuard({ engine: myEngine });
+
+// In your API route:
+await guard.require("write", "documents")(request);
+```
+
+## Bridge (Read-Only)
+
+For read-only access without the full plugin, use `betterAuthBridge`:
+
+```ts
+import { betterAuthBridge } from "@permis/better-auth";
+
+const bridge = betterAuthBridge({
+  auth,
+  engine: myEngine,
+});
+
+await bridge.can(userId, "read", { type: "documents" });
+```

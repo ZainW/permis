@@ -1,0 +1,41 @@
+---
+title: Defining Permissions
+description: Master the permission builder API
+---
+
+Permissions in Permis are immutable objects created via the `definePermission` builder.
+
+## Permission Builder API
+
+```ts
+definePermission(resourceType)
+  .can(...actions) // Define allowed actions
+  .cannot(...actions) // Explicitly deny actions
+  .where(path, value) // Attribute-based path matching
+  .when(fn) // Custom condition function
+  .having(path, value) // Schema-validated condition
+  .build(); // Finalize and return Permission
+```
+
+## Actions
+
+Actions are strings that describe what a subject can do. Common conventions:
+
+- CRUD: `create`, `read`, `update`, `delete`
+- Custom: `publish`, `archive`, `export`
+- Wildcard: `manage` (full access)
+
+```ts
+definePermission("articles").can("create", "read", "update").can("publish").build();
+```
+
+## Resource Types
+
+The resource type is a string identifier. Permissions only apply to resources with matching `type`:
+
+```ts
+const permission = definePermission("orders").can("view").build();
+
+engine.can(permission, "view", { type: "orders", id: "123" }); // matches
+engine.can(permission, "view", { type: "products", id: "456" }); // no match
+```

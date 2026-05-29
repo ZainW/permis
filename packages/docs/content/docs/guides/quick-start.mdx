@@ -1,0 +1,52 @@
+---
+title: Quick Start
+description: Get up and running with Permis in 5 minutes
+---
+
+## 1. Install
+
+```bash
+pnpm add @permis/core
+```
+
+## 2. Define Permissions
+
+```ts
+import { definePermission } from "@permis/core";
+
+const readDocs = definePermission("documents").can("read").where("status", "published").build();
+
+const writeDocs = definePermission("documents").can("write").build();
+
+const manageUsers = definePermission("users").can("manage").build();
+```
+
+## 3. Define Roles
+
+```ts
+import { defineRole } from "@permis/core";
+
+const reader = defineRole("reader").grantAll([readDocs]).build();
+
+const editor = defineRole("editor").grantAll([readDocs, writeDocs]).build();
+
+const admin = defineRole("admin").grantAll([manageUsers]).build();
+```
+
+## 4. Create Engine
+
+```ts
+import { PermisEngine } from "@permis/core";
+
+const engine = new PermisEngine({
+  roles: [reader, editor, admin],
+});
+```
+
+## 5. Check Permissions
+
+```ts
+engine.can(reader, "read", { type: "documents", status: "published" }); // true
+engine.cannot(reader, "write", { type: "documents" }); // true
+engine.authorize(admin, "manage", { type: "users" }); // returns resource or throws PermisError
+```

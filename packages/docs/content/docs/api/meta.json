@@ -1,0 +1,8 @@
+{
+  "title": "API Reference",
+  "pages": [
+    ["@permis/core", "core"],
+    ["@permis/drizzle", "drizzle"],
+    ["@permis/better-auth", "better-auth"]
+  ]
+}

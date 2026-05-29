@@ -1,0 +1,41 @@
+---
+title: Conditions
+description: Deep dive into Permis condition types — when, where, and having
+---
+
+Conditions determine whether a permission should be granted based on runtime attributes.
+
+## Compound Conditions
+
+Multiple conditions on a permission must all pass (logical AND):
+
+```ts
+const editOwn = definePermission("posts")
+  .can("edit")
+  .when((s, r) => s.id === r.authorId)
+  .where("status", "draft")
+  .build();
+```
+
+## Chained Where Conditions
+
+`where` supports method chaining. Each call adds another condition that must match:
+
+```ts
+const advanced = definePermission("documents")
+  .can("view")
+  .where("status", "published")
+  .where("classification", "public")
+  .where("category", ["legal", "finance"])
+  .build();
+```
+
+## Condition Evaluation Order
+
+1. Resource type match
+2. Action match
+3. `where` conditions
+4. `when` conditions
+5. `having` conditions
+
+All conditions must pass for the permission to be granted.

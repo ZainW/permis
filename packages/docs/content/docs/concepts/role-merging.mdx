@@ -1,0 +1,31 @@
+---
+title: Role Merging
+description: Combine roles to create role hierarchies with inherited permissions
+---
+
+`mergeRoles` combines multiple roles into one, resolving permission conflicts with a configurable strategy.
+
+## Basic Usage
+
+```ts
+import { mergeRoles } from "@permis/core";
+
+const readDocs = definePermission("documents").can("read").build();
+const writeDocs = definePermission("documents").can("write").build();
+
+const reader = defineRole("reader").grantAll([readDocs]).build();
+const writer = defineRole("writer").grantAll([writeDocs]).build();
+
+const powerUser = mergeRoles("power-user", [reader, writer]);
+
+// powerUser has both read and write on documents
+```
+
+## Conflict Resolution
+
+When two roles grant different permissions on the same resource, you can choose a resolution strategy:
+
+```ts
+const strict = mergeRoles("strict", [roleA, roleB], { conflict: "deny" });
+const permissive = mergeRoles("permissive", [roleA, roleB], { conflict: "allow" });
+```

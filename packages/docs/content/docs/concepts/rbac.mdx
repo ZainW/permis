@@ -1,0 +1,48 @@
+---
+title: Role-Based Access Control (RBAC)
+description: Define roles with permissions and manage access by role assignment
+---
+
+RBAC in Permis is built around two core concepts: **permissions** (what actions can be performed on what resources) and **roles** (collections of permissions assigned to users).
+
+## Defining Permissions
+
+A permission defines an action that can be performed on a resource type:
+
+```ts
+import { definePermission } from "@permis/core";
+
+const editPosts = definePermission("posts").can("edit").build();
+```
+
+## Defining Roles
+
+A role groups permissions together:
+
+```ts
+import { defineRole } from "@permis/core";
+
+const editor = defineRole("editor").grantAll([editPosts]).build();
+```
+
+## Checking Access
+
+Use `PermisEngine` to check if a role can perform an action:
+
+```ts
+const engine = new PermisEngine({ roles: [editor] });
+
+engine.can(editor, "edit", { type: "posts" }); // => true
+engine.can(editor, "delete", { type: "posts" }); // => false
+```
+
+## Resource Matching
+
+Resource matching uses the `type` field by default. Permissions only apply to resources with matching types:
+
+```ts
+const readDocs = definePermission("documents").can("read").build();
+
+engine.can(readDocs, "read", { type: "documents" }); // => true
+engine.can(readDocs, "read", { type: "images" }); // => false
+```

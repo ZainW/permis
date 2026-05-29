@@ -1,0 +1,41 @@
+---
+title: Drizzle ORM Adapter
+description: Store permissions and roles in a database with Drizzle ORM
+---
+
+`@permis/drizzle` provides a Drizzle ORM adapter for persistent permission storage.
+
+## Installation
+
+```bash
+pnpm add @permis/drizzle drizzle-orm
+```
+
+## Schema Setup
+
+Create the permis tables in your Drizzle schema:
+
+```ts
+import { createPermisSchema } from "@permis/drizzle";
+
+export const permisSchema = createPermisSchema();
+// Returns: { permissions, roles, rolePermissions, subjects }
+```
+
+## Adapter Usage
+
+Create a `drizzleAdapter` and pass it to `PermisEngine`:
+
+```ts
+import { drizzle } from "drizzle-orm/better-sqlite3";
+import { drizzleAdapter } from "@permis/drizzle";
+
+const db = drizzle(/* your db */);
+const adapter = drizzleAdapter(db, permisSchema);
+
+const engine = new PermisEngine({
+  adapter,
+});
+```
+
+The adapter reads roles, permissions, and subject assignments from the database at query time. This enables dynamic permission management without restarts.

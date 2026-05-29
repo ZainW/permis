@@ -1,0 +1,37 @@
+---
+title: Attribute-Based Access Control (ABAC)
+description: Fine-grained access control based on resource and subject attributes
+---
+
+ABAC extends RBAC with attribute-based conditions. Permis supports three types of conditions: `when`, `where`, and `having`.
+
+## When Conditions
+
+`when` takes an arbitrary function that receives the subject and resource and returns a boolean:
+
+```ts
+definePermission("posts")
+  .can("edit")
+  .when((subject, resource) => subject.id === resource.authorId)
+  .build();
+```
+
+## Where Conditions
+
+`where` provides path-based matching against resource properties. Supports literal values, arrays, and regex patterns:
+
+```ts
+definePermission("documents")
+  .can("read")
+  .where("status", ["published", "draft"])
+  .where("team", /^engineering-/)
+  .build();
+```
+
+## Having Conditions
+
+`having` validates resource properties using the Standard Schema specification (compatible with Zod, ArkType, Valibot):
+
+```ts
+definePermission("documents").can("write").having("classification", "classified").build();
+```
