@@ -3,6 +3,7 @@ import { PermisEngine } from "../src/engine.ts";
 import { definePermission } from "../src/permission.ts";
 import { defineRole } from "../src/role.ts";
 import type { PermisAdapter, Subject, Resource } from "../src/types.ts";
+import { PermisError } from "../src/errors.ts";
 
 interface NaiveAdapter extends PermisAdapter {
   _addRole(sid: string, rn: string): void;
@@ -88,9 +89,18 @@ test("PermisEngine in-memory: authorize() throws on denial", async () => {
   const editor = defineRole("editor").with(readPost).build();
   const engine = new PermisEngine({ roles: [editor] });
   await expect(engine.authorize("editor", "read", "post")).resolves.toBeUndefined();
-  await expect(engine.authorize("editor", "delete", "post")).rejects.toThrow(
-    /Permission denied: "editor" cannot "delete" on "post"/,
-  );
+  await expect(engine.authorize("editor", "delete", "post")).rejects.toThrow(PermisError);
+  try {
+    await engine.authorize("editor", "delete", "post");
+  } catch (e) {
+    expect(e).toBeInstanceOf(PermisError);
+    if (e instanceof PermisError) {
+      expect(e.subject).toBe("editor");
+      expect(e.action).toBe("delete");
+      expect(e.resource).toBe("post");
+      expect(e.message).toContain("Permission denied");
+    }
+  }
 });
 
 test("PermisEngine in-memory: getRolesFor() returns matching role names", async () => {

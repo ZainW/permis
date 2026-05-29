@@ -11,6 +11,7 @@ import type {
 } from "./types.ts";
 import { normalizeSubject, normalizeResource } from "./types.ts";
 import { matchAction, matchResource, evaluateConditions } from "./resolver.ts";
+import { PermisError } from "./errors.ts";
 
 export class PermisEngine {
   private _roles: Role[] = [];
@@ -68,7 +69,7 @@ export class PermisEngine {
     if (!allowed) {
       const sub = typeof subject === "string" ? subject : subject.id;
       const res = typeof resource === "string" ? resource : resource.type;
-      throw new Error(`Permission denied: "${sub}" cannot "${action}" on "${res}"`);
+      throw new PermisError(sub, action, res);
     }
   }
 
