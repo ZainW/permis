@@ -1,42 +1,24 @@
 {
   "name": "permis",
   "version": "0.0.0",
-  "description": "A starter for creating a TypeScript package.",
-  "homepage": "https://github.com/author/library#readme",
-  "bugs": {
-    "url": "https://github.com/author/library/issues"
-  },
+  "private": true,
+  "description": "TypeScript permissions library — RBAC + ABAC with drizzle and better-auth adapters",
   "license": "MIT",
-  "author": "Author Name <author.name@mail.com>",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/author/library.git"
-  },
-  "files": [
-    "dist"
-  ],
   "type": "module",
-  "exports": {
-    ".": "./dist/index.mjs",
-    "./package.json": "./package.json"
-  },
-  "publishConfig": {
-    "access": "public"
-  },
   "scripts": {
-    "build": "vp pack",
-    "dev": "vp pack --watch",
-    "test": "vp test",
+    "build": "pnpm -r run build",
+    "dev": "pnpm -r dev",
+    "test": "pnpm -r run test",
     "check": "vp check",
-    "prepublishOnly": "vp run build",
+    "prepublishOnly": "pnpm -r build",
     "prepare": "vp config"
   },
   "devDependencies": {
-    "@types/node": "^25.6.2",
+    "@types/node": "^25.9.1",
     "@typescript/native-preview": "7.0.0-dev.20260509.2",
     "bumpp": "^11.1.0",
     "typescript": "^6.0.3",
-    "vite-plus": "^0.1.20"
+    "vite-plus": "^0.1.22"
   },
   "packageManager": "pnpm@11.4.0"
 }

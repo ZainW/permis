@@ -1,0 +1,25 @@
+{
+  "name": "@permis/drizzle",
+  "version": "0.0.0",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "build": "vp pack",
+    "test": "vp test",
+    "check": "vp check"
+  },
+  "dependencies": {
+    "@permis/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.12",
+    "better-sqlite3": "^11.0.0",
+    "drizzle-orm": "^0.44.0"
+  },
+  "peerDependencies": {
+    "drizzle-orm": "^0.40.0"
+  }
+}
