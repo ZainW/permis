@@ -3,23 +3,16 @@ import { DocsLayout } from 'fumadocs-ui/layouts/docs'
 import { createServerFn } from '@tanstack/react-start'
 import { source } from '@/lib/source'
 import browserCollections from 'collections/browser'
-import {
-  DocsBody,
-  DocsDescription,
-  DocsPage,
-  DocsTitle,
-} from 'fumadocs-ui/layouts/docs/page'
+import { DocsBody, DocsDescription, DocsPage, DocsTitle } from 'fumadocs-ui/page'
 import { baseOptions } from '@/lib/layout.shared'
-import { useFumadocsLoader } from 'fumadocs-core/source/client'
-import { Suspense } from 'react'
 import { useMDXComponents } from '@/components/mdx'
+import { Suspense } from 'react'
 
 export const Route = createFileRoute('/docs/$')({
   component: Page,
   loader: async ({ params }) => {
     const slugs = params._splat?.split('/') ?? []
     const data = await serverLoader({ data: slugs })
-    await clientLoader.preload(data.path)
     return data
   },
 })
@@ -31,7 +24,7 @@ const serverLoader = createServerFn({ method: 'GET' })
     if (!page) throw notFound()
     return {
       path: page.path,
-      pageTree: await source.serializePageTree(source.getPageTree()),
+      pageTree: source.getPageTree(),
     }
   })
 
@@ -53,10 +46,13 @@ const clientLoader = browserCollections.docs.createClientLoader({
 })
 
 function Page() {
-  const data = useFumadocsLoader(Route.useLoaderData())
+  const { path, pageTree } = Route.useLoaderData()
+  const Component = clientLoader.getComponent(path)
   return (
-    <DocsLayout {...baseOptions()} tree={data.pageTree}>
-      <Suspense>{clientLoader.useContent(data.path)}</Suspense>
+    <DocsLayout {...baseOptions()} tree={pageTree}>
+      <Suspense fallback={<div>Loading...</div>}>
+        <Component />
+      </Suspense>
     </DocsLayout>
   )
 }
