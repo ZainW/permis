@@ -17,5 +17,6 @@ export {
 
 export { definePermission, PermissionBuilder } from "./permission.ts";
 export { defineRole, RoleBuilder } from "./role.ts";
+export { mergeRoles } from "./merge.ts";
 export { PermisEngine } from "./engine.ts";
 export { PermisError } from "./errors.ts";

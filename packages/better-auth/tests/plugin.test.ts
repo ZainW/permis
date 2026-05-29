@@ -54,3 +54,32 @@ test("createGuard guard returns false for denied action", async () => {
   const result = await guard("editor", "delete", "post");
   expect(result).toBe(false);
 });
+
+test("permisPlugin with adapter exposes the adapter", () => {
+  const readPost = definePermission("read", "post").build();
+  const editor = defineRole("editor").with(readPost).build();
+  const adapter = {
+    async getRolesForSubject(_subjectId: string) {
+      return ["editor"];
+    },
+    async getPermissionsForRole(_roleName: string) {
+      return [readPost];
+    },
+    async getPermissionsForSubject(_subjectId: string) {
+      return [readPost];
+    },
+    async resolveSubject(subjectId: string) {
+      return { id: subjectId, type: "user" };
+    },
+    async resolveResource(type: string, _id: string) {
+      return { type };
+    },
+  };
+  const plugin = permisPlugin({ roles: [editor], adapter });
+  expect(plugin.adapter).toBe(adapter);
+});
+
+test("permisPlugin without adapter exposes adapter as undefined", () => {
+  const plugin = permisPlugin({});
+  expect(plugin.adapter).toBeUndefined();
+});
