@@ -1,8 +1,6 @@
-declare module "collections/browser" {
-  const browserCollections: any;
-  export default browserCollections;
-}
+/// <reference types="vite/client" />
 
-declare module "collections/server" {
-  export const docs: any;
+declare module "*.css" {
+  const content: string;
+  export default content;
 }

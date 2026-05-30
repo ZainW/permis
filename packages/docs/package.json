@@ -4,19 +4,21 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "vite dev",
-    "build": "vite build",
-    "preview": "vite preview"
+    "dev": "vp dev",
+    "build": "vp build",
+    "preview": "vp preview",
+    "check": "vp check",
+    "test": "vp test"
   },
   "dependencies": {
     "@cloudflare/vite-plugin": "^1.0.0",
     "@tailwindcss/vite": "^4.0.0",
     "@tanstack/react-router": "^1.114.0",
     "@tanstack/react-start": "^1.114.0",
-    "fumadocs-core": "^15.0.0",
-    "fumadocs-mdx": "^12.0.0",
-    "fumadocs-typescript": "^3.0.0",
-    "fumadocs-ui": "^15.0.0",
+    "fumadocs-core": "^16.9.2",
+    "fumadocs-mdx": "^15.0.9",
+    "fumadocs-typescript": "^5.2.6",
+    "fumadocs-ui": "^16.9.2",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "tailwindcss": "^4.0.0",
