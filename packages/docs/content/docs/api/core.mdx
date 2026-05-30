@@ -3,16 +3,23 @@ title: "@permis/core"
 description: Core types and API reference for @permis/core
 ---
 
+## PermisEngine
+
+```ts
+import { PermisEngine } from "@permis/core";
+
+const engine = new PermisEngine({ roles: [reader, editor] });
+
+engine.can(editor, "write", { type: "documents" });
+engine.authorize(admin, "manage", { type: "users" });
+```
+
 ## Core Types
 
-<auto-type-table path="../../../../../packages/core/src/types.ts" name="Subject" />
-
-<auto-type-table path="../../../../../packages/core/src/types.ts" name="Resource" />
-
-<auto-type-table path="../../../../../packages/core/src/types.ts" name="Permission" />
-
-<auto-type-table path="../../../../../packages/core/src/types.ts" name="Role" />
-
-## Engine
-
-<auto-type-table path="../../../../../packages/core/src/engine.ts" name="PermisEngine" />
+| Type           | Description                                         |
+| -------------- | --------------------------------------------------- |
+| `Subject`      | The entity requesting access (user, role, etc.)     |
+| `Resource`     | The entity being accessed (document, user, etc.)    |
+| `SubjectId`    | Unique identifier for a subject                     |
+| `Action`       | The action being performed (`create`, `read`, etc.) |
+| `ResourceType` | String identifier for a resource type               |

@@ -1,18 +1,18 @@
 {
   "title": "Docs",
   "pages": [
-    ["Getting Started", "index"],
+    "index",
     "---Concepts---",
-    ["RBAC", "concepts/rbac"],
-    ["ABAC", "concepts/abac"],
-    ["Conditions", "concepts/conditions"],
-    ["Role Merging", "concepts/role-merging"],
+    "concepts/rbac",
+    "concepts/abac",
+    "concepts/conditions",
+    "concepts/role-merging",
     "---Guides---",
-    ["Quick Start", "guides/quick-start"],
-    ["Defining Permissions", "guides/defining-permissions"],
-    ["Engine Usage", "guides/engine-usage"],
+    "guides/quick-start",
+    "guides/defining-permissions",
+    "guides/engine-usage",
     "---Adapters---",
-    ["Drizzle ORM", "adapters/drizzle"],
-    ["Better-Auth", "adapters/better-auth"]
+    "adapters/drizzle",
+    "adapters/better-auth"
   ]
 }

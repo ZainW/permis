@@ -1,38 +1,59 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
 import { DocsLayout } from "fumadocs-ui/layouts/docs";
+import { createServerFn } from "@tanstack/react-start";
 import { source } from "@/lib/source";
+import browserCollections from "collections/browser";
+import { DocsBody, DocsDescription, DocsPage, DocsTitle } from "fumadocs-ui/page";
 import { baseOptions } from "@/lib/layout.shared";
-import type { Root } from "fumadocs-core/page-tree";
-
-interface LoaderData {
-  path: string;
-  title: string;
-  pageTree: Root;
-}
+import { useMDXComponents } from "@/components/mdx";
+import { Suspense } from "react";
+import type { FC } from "react";
 
 export const Route = createFileRoute("/docs/$")({
   component: Page,
-  loader: async ({ params }): Promise<LoaderData> => {
+  loader: async ({ params }) => {
     const slugs = params._splat?.split("/") ?? [];
+    const data = await serverLoader({ data: slugs });
+    return data as { path: string; pageTree: ReturnType<typeof source.getPageTree> };
+  },
+});
+
+const serverLoader = createServerFn({ method: "GET" })
+  .inputValidator((slugs: string[]) => slugs)
+  .handler(async ({ data: slugs }) => {
     const page = source.getPage(slugs);
     if (!page) throw notFound();
-    return {
+    const result: any = {
       path: page.path,
-      title: (page.data.title as string) ?? "Untitled",
       pageTree: source.getPageTree(),
     };
+    return result;
+  });
+
+const clientLoader = browserCollections.docs.createClientLoader({
+  component(props: any) {
+    const { toc, frontmatter, default: MDX } = props;
+    return (
+      <DocsPage toc={toc}>
+        <DocsTitle>{frontmatter?.title}</DocsTitle>
+        <DocsDescription>{frontmatter?.description}</DocsDescription>
+        <DocsBody>
+          <MDX components={useMDXComponents()} />
+        </DocsBody>
+      </DocsPage>
+    );
   },
 });
 
 function Page() {
-  const data = Route.useLoaderData();
+  const data: any = Route.useLoaderData();
+  const Component = clientLoader.getComponent(data.path) as unknown as FC;
 
   return (
     <DocsLayout {...baseOptions()} tree={data.pageTree}>
-      <article className="prose py-6 px-4">
-        <h1 className="text-2xl font-bold">{data.title}</h1>
-        <p>Docs content coming soon.</p>
-      </article>
+      <Suspense fallback={<div>Loading...</div>}>
+        <Component />
+      </Suspense>
     </DocsLayout>
   );
 }

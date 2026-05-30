@@ -3,6 +3,21 @@ title: "@permis/drizzle"
 description: API reference for @permis/drizzle
 ---
 
-<auto-type-table path="../../../../../packages/drizzle/src/schema.ts" name="PermisSchema" />
+## Schema
 
-<auto-type-table path="../../../../../packages/drizzle/src/adapter.ts" name="drizzleAdapter" />
+```ts
+import { createPermisSchema } from "@permis/drizzle";
+
+const permisSchema = createPermisSchema();
+// Returns: { permissions, roles, rolePermissions, subjects }
+```
+
+## Adapter
+
+```ts
+import { drizzleAdapter } from "@permis/drizzle";
+
+const adapter = drizzleAdapter(db, permisSchema);
+
+const engine = new PermisEngine({ adapter });
+```
