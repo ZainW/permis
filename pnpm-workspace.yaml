@@ -16,8 +16,10 @@ packages:
   - packages/*
 onlyBuiltDependencies:
   - better-sqlite3
+  - sharp
+  - workerd
 allowBuilds:
   better-sqlite3: true
   esbuild: true
-  sharp: set this to true or false
-  workerd: set this to true or false
+  sharp: true
+  workerd: true
