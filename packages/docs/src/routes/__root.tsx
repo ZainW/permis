@@ -24,7 +24,7 @@ function RootComponent() {
 
 function RootDocument({ children }: Readonly<{ children: ReactNode }>) {
   return (
-    <html suppressHydrationWarning>
+    <html suppressHydrationWarning className="antialiased">
       <head>
         <HeadContent />
         <script

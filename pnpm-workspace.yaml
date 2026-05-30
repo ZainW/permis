@@ -19,5 +19,5 @@ onlyBuiltDependencies:
 allowBuilds:
   better-sqlite3: true
   esbuild: true
-  sharp: set this to true or false
-  workerd: set this to true or false
+  sharp: true
+  workerd: true
