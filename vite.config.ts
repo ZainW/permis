@@ -17,4 +17,7 @@ export default defineConfig({
     },
   },
   fmt: {},
+  run: {
+    cache: true,
+  },
 });
