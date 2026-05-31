@@ -3,18 +3,19 @@ import { DocsLayout } from "fumadocs-ui/layouts/docs";
 import { createServerFn } from "@tanstack/react-start";
 import { source } from "@/lib/source";
 import browserCollections from "collections/browser";
-import { DocsBody, DocsDescription, DocsPage, DocsTitle } from "fumadocs-ui/page";
+import { DocsBody, DocsDescription, DocsPage, DocsTitle } from "fumadocs-ui/layouts/docs/page";
 import { baseOptions } from "@/lib/layout.shared";
-import { useMDXComponents } from "@/components/mdx";
+import { useFumadocsLoader } from "fumadocs-core/source/client";
 import { Suspense } from "react";
-import type { FC } from "react";
+import { useMDXComponents } from "@/components/mdx";
 
 export const Route = createFileRoute("/docs/$")({
   component: Page,
   loader: async ({ params }) => {
     const slugs = params._splat?.split("/") ?? [];
     const data = await serverLoader({ data: slugs });
-    return data as { path: string; pageTree: ReturnType<typeof source.getPageTree> };
+    await clientLoader.preload(data.path);
+    return data;
   },
 });
 
@@ -23,16 +24,15 @@ const serverLoader = createServerFn({ method: "GET" })
   .handler(async ({ data: slugs }) => {
     const page = source.getPage(slugs);
     if (!page) throw notFound();
-    const result: any = {
+
+    return {
       path: page.path,
-      pageTree: source.getPageTree(),
+      pageTree: await source.serializePageTree(source.getPageTree()),
     };
-    return result;
   });
 
 const clientLoader = browserCollections.docs.createClientLoader({
-  component(props: any) {
-    const { toc, frontmatter, default: MDX } = props;
+  component({ toc, frontmatter, default: MDX }: any, _props: undefined) {
     return (
       <DocsPage toc={toc}>
         <DocsTitle>{frontmatter?.title}</DocsTitle>
@@ -46,14 +46,11 @@ const clientLoader = browserCollections.docs.createClientLoader({
 });
 
 function Page() {
-  const data: any = Route.useLoaderData();
-  const Component = clientLoader.getComponent(data.path) as unknown as FC;
+  const data = useFumadocsLoader(Route.useLoaderData());
 
   return (
     <DocsLayout {...baseOptions()} tree={data.pageTree}>
-      <Suspense fallback={<div>Loading...</div>}>
-        <Component />
-      </Suspense>
+      <Suspense fallback={<div>Loading...</div>}>{clientLoader.useContent(data.path)}</Suspense>
     </DocsLayout>
   );
 }
